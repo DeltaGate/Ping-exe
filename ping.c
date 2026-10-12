@@ -33,7 +33,7 @@ int main(int argc, char *argv[]){
     struct addrinfo *result = NULL, *ptr = NULL, hints;
 
     ZeroMemory(&hints, sizeof(hints));
-    hints.ai_family     = AF_UNSPEC; // defines if connection accepts IPv4 or IPv6
+    hints.ai_family     = AF_UNSPEC; // defines if connection accepts IPv4 or IPv6 - I chose unspec so it can be either
     hints.ai_socktype   = SOCK_DGRAM; // Telling it to use UDP socket
     hints.ai_protocol   = IPPROTO_UDP; // Telling it to use UDP protocol
 
@@ -66,7 +66,23 @@ int main(int argc, char *argv[]){
     WSACleanup();
     return 1;
     }
-    
+
+    // setting varibles for sending ping packet
+    char sendBuffer[] = "PING";
+    int bufferLength = 4;
+
+
+    // send a PING packet via UDP through assgined socket
+    iResult = sendto(ConnectSocket, sendBuffer, bufferLength, 0, ptr->ai_addr, (int)ptr->ai_addrlen);
+    if(iResult == SOCKET_ERROR){
+        printf("Packet Sending Failure %d\n", WSAGetLastError());
+        freeaddrinfo(result);
+        WSACleanup();
+        return 1;
+    }
+
+    printf("Ping Sent\n");
+
 
     //clean up in required order ofc - my comments getting more causal the longer I go lol
     freeaddrinfo(result);
