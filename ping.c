@@ -59,6 +59,11 @@ int main(int argc, char *argv[]){
     ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
 
 
+
+
+
+
+
     // checking socket is valid
     if (ConnectSocket == INVALID_SOCKET) {
     printf("Error at socket(): %ld\n", WSAGetLastError());
@@ -66,6 +71,11 @@ int main(int argc, char *argv[]){
     WSACleanup();
     return 1;
     }
+
+
+
+
+
 
     // setting varibles for sending ping packet
     char sendBuffer[] = "PING";
@@ -81,7 +91,24 @@ int main(int argc, char *argv[]){
         return 1;
     }
 
+    printf("Bytes sent: %d\n", iResult);
     printf("Ping Sent\n");
+
+
+    char recvBuffer[5];
+    struct sockaddr_in serverAddr;
+    int serverAddrSize = sizeof(serverAddr);
+
+
+    iResult = recvfrom(ConnectSocket, recvBuffer, bufferLength, 0, (SOCKADDR *)&serverAddr, &serverAddrSize);
+    if (iResult == SOCKET_ERROR) {
+    printf("recvfrom failed: %ld\n", WSAGetLastError());
+    }
+    printf("Received: %s\n", recvBuffer);
+
+
+
+
 
 
     //clean up in required order ofc - my comments getting more causal the longer I go lol
